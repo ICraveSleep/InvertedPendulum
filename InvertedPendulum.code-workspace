@@ -10,7 +10,12 @@
 		}
 	],
 	"settings": {
-		"typescript.tsc.autoDetect": "off"
+		"typescript.tsc.autoDetect": "off",
+		"files.associations": {
+			"complex": "cpp",
+			"valarray": "cpp",
+			"cmath": "cpp"
+		}
 	},
 	"extensions": {
 		"recommendations": [

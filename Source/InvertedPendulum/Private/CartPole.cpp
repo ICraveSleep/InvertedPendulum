@@ -16,7 +16,7 @@ ACartPole::ACartPole()
 
 	// Add the Meshes when the Actor (CartPole) is spawned to the StaticMeshComponents
 	// Base 
-	base_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CartPoleMesh")); // Create Object
+	base_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh")); // Create Object
 	base_mesh->SetStaticMesh(BaseMesh.Object); // Add the static mesh BaseMesh
 	base_mesh->SetupAttachment(RootComponent); // Attach it to the RootComponent (Make it the "base link")
 	// TODO add prismatic joint
@@ -29,7 +29,7 @@ ACartPole::ACartPole()
 	revolute_joint = CreateDefaultSubobject<USceneComponent>(TEXT("This is a joint"));
 	revolute_joint->SetupAttachment(cart_mesh); // Make the cart the "parent link"
 	// Pole
-	pole_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ARM"));
+	pole_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pole Mesh"));
 	pole_mesh->SetStaticMesh(PendulumMesh.Object); // Add the statich mesh PendulumMesh
 	pole_mesh->SetupAttachment(revolute_joint);  // Attach it to the revolute joint as "child link"
 	pole_mesh->SetRelativeLocation({ 0, 0, 0 }); // Set position in relation to revolute_joint origin [cm].
@@ -40,6 +40,10 @@ ACartPole::ACartPole()
 void ACartPole::BeginPlay()
 {
 	Super::BeginPlay();
+	cart_mesh->SetRelativeLocation({ 7.2269, 0, 91.609 });  // Set back postikon on begin play
+	pole_mesh->SetRelativeLocation({ 0, 0, 0 }); // Set back postikon on begin play
+
+	
 	
 }
 
