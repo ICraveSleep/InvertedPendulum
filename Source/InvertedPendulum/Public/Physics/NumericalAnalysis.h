@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Core/Public/HAL/Runnable.h"
-#include "CartPole.h"
+// #include "CartPole.h"
 
-
+//Forward Declaration  // TODO Figure out how to not have forward declarations
+class FRunnableThread;
+class ACartPole;
 /**
  * 
  */

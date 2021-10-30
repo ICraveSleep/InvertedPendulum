@@ -8,6 +8,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/SceneComponent.h"
 #include "Kismet/GameplayStatics.h"
+// Threading
+#include "HAL/Runnable.h"
+#include "HAL/RunnableThread.h"
+#include "Physics/NumericalAnalysis.h"
 // ADDED END //
 #include "CartPole.generated.h"
 
@@ -36,6 +40,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+
+	// Threading
+	FNumericalAnalysis *numerical_thread = nullptr;  // Pointer to object with the thread functions to be used
+	FRunnableThread* current_running_thread = nullptr;  // thread to be given the numerical_thread object
 
 public:	
 	// Called every frame
@@ -44,6 +53,6 @@ public:
 private:
 	float pole_angle;
 	float cart_position;
-	
+	void PrintThreadData();
 	
 };

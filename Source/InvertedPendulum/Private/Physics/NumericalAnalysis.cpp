@@ -20,7 +20,7 @@ bool FNumericalAnalysis::Init()
 	l = (0.685 - 0.246);
 	step_count = 0;
 	calculations = 50000;
-	theta = 1.57;
+	theta = 2.14;
 	current_theta = theta;
 	theta_d = 0;
 	theta_dd = 0;
@@ -39,8 +39,8 @@ uint32 FNumericalAnalysis::Run()
 	while (!stop_thread) {
 		UE4_tmux.Lock();
 		if (step_count <= calculations) {
-			theta_dd = -1*((9.81 * sin(theta) + pos_dd * cos(theta)))/l;
-			pos_dd = ((-m_pole * l * theta_dd * cos(theta) + m_pole * l * theta_d * theta_d * sin(theta))) / (m_cart + m_pole);
+			theta_dd = (- g * sin(theta) - pos_dd * cos(theta))/l;
+			pos_dd = (-m_pole * l * theta_dd * cos(theta) + m_pole * l * theta_d * theta_d * sin(theta)) / (m_cart + m_pole);
 
 			theta_d = theta_dd * dt + theta_d;
 			pos_d = pos_dd * dt + pos_d;

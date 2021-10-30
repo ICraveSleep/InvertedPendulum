@@ -43,7 +43,9 @@ void ACartPole::BeginPlay()
 	cart_mesh->SetRelativeLocation({ 7.2269, 0, 91.609 });  // Set back postikon on begin play
 	pole_mesh->SetRelativeLocation({ 0, 0, 0 }); // Set back postikon on begin play
 
-	
+	numerical_thread = new FNumericalAnalysis(this);
+	current_running_thread = FRunnableThread::Create(numerical_thread, TEXT("Calculation thread"));
+
 	
 }
 
@@ -52,5 +54,34 @@ void ACartPole::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (numerical_thread) {
+		numerical_thread->get_values(pole_angle, cart_position);
+	}
+
+	PrintThreadData();
+	float time_pass = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+
+	FRotator update = { 0, 0, (pole_angle*180.0f/3.14f) };
+	FVector pos_update = { 7.2269f, cart_position * 10.0f , 91.609f};
+	revolute_joint->SetRelativeRotation(update);	
+	cart_mesh->SetRelativeLocation(pos_update);
+
+}
+
+void ACartPole::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	if (numerical_thread && current_running_thread) {
+		numerical_thread->Stop();
+		current_running_thread->WaitForCompletion();
+		delete numerical_thread;
+	}
+}
+
+void ACartPole::PrintThreadData()
+{
+	//numerical_thread->get_value(got_angle, got_pos);
+	UE_LOG(LogTemp, Warning, TEXT("Processed Calculation: Angle= %f, Pos = %f"), pole_angle, cart_position);	
 }
 
