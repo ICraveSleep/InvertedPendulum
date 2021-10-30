@@ -1,0 +1,16 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{00040585-08D9-90A6-E049-DA468C15CB53}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "InvertedPendulum",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	]
+}
