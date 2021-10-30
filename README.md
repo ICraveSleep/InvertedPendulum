@@ -10,3 +10,13 @@ Helpful links for infomration:
 * https://answers.unrealengine.com/questions/25505/compiling-within-the-editor-complains-about-change.html
 * https://github.com/is-centre/udp-ue4-plugin-win64
 * https://github.com/getnamo/udp-ue4/blob/master/Source/UDPWrapper/Public/UDPComponent.h
+
+### Functionaly from Unreal enigne used
+
+Sockets and networking:
+* Modules: "Sockets", "Networking"
+* FSocket
+* UDPSocketBuilder, UDPSocketSender
+
+Threading:
+* FRunnable
