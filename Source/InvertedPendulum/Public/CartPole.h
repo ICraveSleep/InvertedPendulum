@@ -12,6 +12,12 @@
 #include "HAL/Runnable.h"
 #include "HAL/RunnableThread.h"
 #include "Physics/NumericalAnalysis.h"
+// Networking
+#include "Common/UdpSocketBuilder.h"
+#include "Common/UdpSocketReceiver.h"
+#include "Interfaces/IPv4/IPv4Address.h"
+#include "Interfaces/IPv4/IPv4Endpoint.h"
+#include "Serialization/ArrayWriter.h"
 // ADDED END //
 #include "CartPole.generated.h"
 
@@ -54,5 +60,21 @@ private:
 	float pole_angle;
 	float cart_position;
 	void PrintThreadData();
+
+
+	FIPv4Address _address = {127, 0, 0, 1};
+	uint16 _port = 22001;
+	FSocket* _socket;
+	
+	int32 _buffer_size = 64;
+	TSharedPtr<FInternetAddr> socket_addr;  // TODO should be remote_addres
+	FArrayWriter Writer;
+
+	// Receiver
+	FSocket* _listen_socket;
+	FUdpSocketReceiver* _udp_receiver = nullptr;
+	void Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt);
+	void activate_sockets();
+	void close_sockets();
 	
 };
