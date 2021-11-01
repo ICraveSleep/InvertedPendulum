@@ -3,3 +3,5 @@
 /Intermediate
 /Saved
 /Binaries
+/Source/InvertedPendulum/Private/DummyActorComponent.cpp
+/Source/InvertedPendulum/Public/DummyActorComponent.h
