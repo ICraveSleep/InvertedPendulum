@@ -1,5 +1,8 @@
 # UE4 - Inverted Pendulum
 
+![Inverted Pendulum logo](README/icon.png "Inverted Pendulum logo")
+
+
 Old Unreal Enigne 4 wiki - https://nerivec.github.io/old-ue4-wiki/index.html
 
 Helpful links for infomration:

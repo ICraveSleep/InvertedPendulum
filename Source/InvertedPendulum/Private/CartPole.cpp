@@ -90,7 +90,7 @@ void ACartPole::Tick(float DeltaTime)
 	// Convert to send data function -- START
 
 	if (Writer.Num() > 0){
-		_save_data = _save_data+0.1f;
+		_save_data = pole_angle;
 		unsigned char float_bytes[sizeof(_save_data)];
 		UE_LOG(LogTemp, Warning, TEXT("Array size is set to: %i"), sizeof(_save_data));
 		memcpy(float_bytes, &_save_data, sizeof(_save_data));
