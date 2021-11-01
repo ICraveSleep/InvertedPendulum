@@ -1,7 +1,13 @@
 # UE4 - Inverted Pendulum
 
-![Inverted Pendulum logo](misc/images/pend_logo.png)
-<!-- <img src="./misc/images/pend_logo.png" alt="PoleCart logo" style="height: 100px; width:100px;"/> -->
+
+
+#### Animation
+
+![Inverted Pendulum logo2](misc/gifs/ezgif-gif-maker-cartpole.gif)
+
+<!-- ![Inverted Pendulum logo](misc/images/pend_logo.png) -->
+<!-- <img src="./misc/images/pend_logo.png" alt="PoleCart logo" style="height: 500px; width:500px;"/> -->
 
 Old Unreal Enigne 4 wiki - https://nerivec.github.io/old-ue4-wiki/index.html
 
