@@ -9,6 +9,13 @@ ACartPole::ACartPole()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+
+	//SetVariables
+	_address = {127, 0, 0, 1};
+	_sender_port = 22002;
+	_receiver_port = 22001;
+	_buffer_size = 64;
+
 	// Get the Meshes 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> BaseMesh(TEXT("/Game/Models/Base/inverted_pendulum_base.inverted_pendulum_base"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> CartMesh(TEXT("/Game/Models/Cart/inverted_pendulum_cart.inverted_pendulum_cart"));
@@ -46,6 +53,20 @@ void ACartPole::BeginPlay()
 	numerical_thread = new FNumericalAnalysis(this);
 	current_running_thread = FRunnableThread::Create(numerical_thread, TEXT("Calculation thread"));
 
+	// Initialize writer data
+	if (Writer.Num() <= 0){
+		// float data = 123.123;
+		_save_data = 123.123;
+		unsigned char float_bytes[sizeof(_save_data)];
+		UE_LOG(LogTemp, Warning, TEXT("Array size is set to: %i"), sizeof(_save_data));
+		memcpy(float_bytes, &_save_data, sizeof(_save_data));
+		// Writer << data;
+		Writer.Add(float_bytes[0]);
+		Writer.Add(float_bytes[1]);
+		Writer.Add(float_bytes[2]);
+		Writer.Add(float_bytes[3]);
+	}
+
 	activate_sockets();
 }
 
@@ -58,13 +79,32 @@ void ACartPole::Tick(float DeltaTime)
 		numerical_thread->get_values(pole_angle, cart_position);
 	}
 
-	PrintThreadData();
+	// PrintThreadData();
 	float time_pass = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 
 	FRotator update = { 0, 0, (pole_angle*180.0f/3.14f) };
 	FVector pos_update = { 7.2269f, cart_position * 10.0f , 91.609f};
 	revolute_joint->SetRelativeRotation(update);	
 	cart_mesh->SetRelativeLocation(pos_update);
+
+	// Convert to send data function -- START
+
+	if (Writer.Num() > 0){
+		_save_data = _save_data+0.1f;
+		unsigned char float_bytes[sizeof(_save_data)];
+		UE_LOG(LogTemp, Warning, TEXT("Array size is set to: %i"), sizeof(_save_data));
+		memcpy(float_bytes, &_save_data, sizeof(_save_data));
+		// Writer << data;
+		// Writer.Empty();
+		Writer[0] = float_bytes[0];
+		Writer[1] = float_bytes[1];
+		Writer[2] = float_bytes[2];
+		Writer[3] = float_bytes[3];
+	}
+	int32 BytesSent = 0;
+	_send_socket->Send(Writer.GetData(), Writer.Num(), BytesSent);
+	UE_LOG(LogTemp, Warning, TEXT("Sent bytes: %i, Writer.Num(): %i"), BytesSent, Writer.Num());
+	// Convert to send data function -- END
 
 }
 
@@ -83,68 +123,30 @@ void ACartPole::EndPlay(EEndPlayReason::Type EndPlayReason)
 
 void ACartPole::PrintThreadData()
 {
-	//numerical_thread->get_value(got_angle, got_pos);
 	UE_LOG(LogTemp, Warning, TEXT("Processed Calculation: Angle= %f, Pos = %f"), pole_angle, cart_position);	
 }
 
 void ACartPole::activate_sockets(){
-		// ...
-	// FIPv4Address::Parse(FString("127.0.0.1"), _address);
-	uint16 _port2 = 22002;
-	FIPv4Endpoint Endpoint(_address, _port);
-	FIPv4Endpoint Endpoint2(_address, _port2);
+	
+	FIPv4Endpoint _receiver_endpoint(_address, _receiver_port);
+	FIPv4Endpoint _sender_endpoint(_address, _sender_port);
 	
 	socket_addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-	socket_addr->SetPort(Endpoint2.Port);
-	socket_addr->SetIp(Endpoint2.Address.Value);
-	
-	
-	_socket = FUdpSocketBuilder(TEXT("UDPSocket")).AsReusable()
-													.AsNonBlocking();
-													// .BoundToEndpoint(Endpoint)
-													// .WithSendBufferSize(_buffer_size).WithBroadcast();
-
-	int32 SendSize = 64;
-	// _socket->SetReceiveBufferSize(SendSize,SendSize);
-
-	_socket->Bind(*socket_addr);
-
-	FTimespan thread_wait_time = FTimespan::FromMilliseconds(500);
-
-
-	// TArray<uint8_t> data;
-	// for(int i = 1; i < 60; i++){
-	// 	data.Add(i);
-	// }
-	
-	// uint8 data = 8;
-	float data = 123.123;
-	
-	Writer << data;
-	int32 BytesSent = 0;
+	socket_addr->SetPort(_sender_endpoint.Port);
+	socket_addr->SetIp(_sender_endpoint.Address.Value);
+	_send_socket = FUdpSocketBuilder(TEXT("UDPSocket")).AsReusable().AsNonBlocking();
+	_send_socket->Bind(*socket_addr);
 	bool connected;
-
-	connected = _socket->Connect(*socket_addr);
+	connected = _send_socket->Connect(*socket_addr);
 	UE_LOG(LogTemp, Warning, TEXT("Connected: %u"), connected);
-
-
-	FString serialized = TEXT("Hello from from UE4 UDP client");
-	TCHAR *serializedChar = serialized.GetCharArray().GetData();
-	// int32 size_len = FCString::Strlen(serializedChar);
-	const char* send_string = TCHAR_TO_UTF8(serializedChar);
-	int32 size_len = strlen(send_string);
-	_socket->Send(Writer.GetData(), Writer.Num(), BytesSent);
-	// _socket->Send((uint8*)send_string, size_len, BytesSent);
-
-	UE_LOG(LogTemp, Warning, TEXT("Sent data: %i"), BytesSent);
 
 	// Receiver
 	
 		_listen_socket = FUdpSocketBuilder(TEXT("UPD Listener"))
 		.AsNonBlocking()
 		.AsReusable()
-		.BoundToEndpoint(Endpoint)
-		.WithReceiveBufferSize(SendSize);
+		.BoundToEndpoint(_receiver_endpoint)
+		.WithReceiveBufferSize(_buffer_size);
 	;
 	FTimespan ThreadWaitTime = FTimespan::FromMilliseconds(10);
 	_udp_receiver = new FUdpSocketReceiver(_listen_socket, ThreadWaitTime, TEXT("UDP RECEIVER"));
@@ -160,10 +162,9 @@ void ACartPole::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint&
 	uint8 rec_data[64] = {};
 	int32 data_size = ArrayReaderPtr->Num();
 	int32 offset = 0;
-	// *ArrayReaderPtr << rec_data[0];
 
 	for(int i = 0; i < data_size; i++){
-	*ArrayReaderPtr << rec_data[i];  //TODO figure out this
+	*ArrayReaderPtr << rec_data[i];  //TODO figure out why this works
 	}
 	
 	for(int i = 0; i < data_size; i++){
@@ -172,13 +173,12 @@ void ACartPole::Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint&
 }
 
 void ACartPole::close_sockets(){
-		if(_socket){
-		_socket->Close();
-		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(_socket);
+
+	if(_send_socket){
+		_send_socket->Close();
+		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(_send_socket);
 		UE_LOG(LogTemp, Warning, TEXT("EndPlay called, socket closed"));
 	}
-
-	
 
 	_udp_receiver->Stop();
 	delete _udp_receiver;

@@ -10,6 +10,8 @@ Helpful links for infomration:
 * https://answers.unrealengine.com/questions/25505/compiling-within-the-editor-complains-about-change.html
 * https://github.com/is-centre/udp-ue4-plugin-win64
 * https://github.com/getnamo/udp-ue4/blob/master/Source/UDPWrapper/Public/UDPComponent.h
+* https://nerivec.github.io/old-ue4-wiki/pages/udp-socket-sender-receiver-from-one-ue4-instance-to-another.html
+* https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/TArrays/
 
 ### Functionaly from Unreal enigne used
 

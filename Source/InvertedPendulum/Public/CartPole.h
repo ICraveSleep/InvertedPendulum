@@ -62,18 +62,23 @@ private:
 	void PrintThreadData();
 
 
-	FIPv4Address _address = {127, 0, 0, 1};
-	uint16 _port = 22001;
-	FSocket* _socket;
-	
-	int32 _buffer_size = 64;
+	FIPv4Address _address;
+	uint16 _receiver_port;
+	uint16 _sender_port;
+	int32 _buffer_size;
+	float _save_data;
+	FSocket* _send_socket;
 	TSharedPtr<FInternetAddr> socket_addr;  // TODO should be remote_addres
-	FArrayWriter Writer;
+	// FArrayWriter Writer;
+	TArray<uint8> Writer;
+	// FArray Writer;
 
 	// Receiver
 	FSocket* _listen_socket;
 	FUdpSocketReceiver* _udp_receiver = nullptr;
 	void Recv(const FArrayReaderPtr& ArrayReaderPtr, const FIPv4Endpoint& EndPt);
+
+	// Socket assist functions
 	void activate_sockets();
 	void close_sockets();
 	
