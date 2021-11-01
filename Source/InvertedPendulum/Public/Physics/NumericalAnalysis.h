@@ -13,8 +13,10 @@ class ACartPole;
 /**
  * 
  */
+
 class FNumericalAnalysis : public FRunnable
 {
+
 public:
 	// Sets default values for this component's properties
 	FNumericalAnalysis(ACartPole *ThreadActor);
