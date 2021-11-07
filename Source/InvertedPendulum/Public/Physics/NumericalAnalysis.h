@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/ActorComponent.h"
 #include "Core/Public/HAL/Runnable.h"
 // #include "CartPole.h"

@@ -21,6 +21,7 @@ Helpful links for infomration:
 * https://github.com/getnamo/udp-ue4/blob/master/Source/UDPWrapper/Public/UDPComponent.h
 * https://nerivec.github.io/old-ue4-wiki/pages/udp-socket-sender-receiver-from-one-ue4-instance-to-another.html
 * https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/TArrays/
+* https://forums.unrealengine.com/t/where-to-get-the-worldcontextobject-when-world-is-null/128450
 
 ### Functionaly from Unreal enigne used
 
