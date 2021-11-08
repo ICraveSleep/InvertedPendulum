@@ -93,7 +93,7 @@ void ACartPole::Tick(float DeltaTime)
 		_save_data = pole_angle;
 		unsigned char float_bytes[sizeof(_save_data)];
 		// UE_LOG(LogTemp, Warning, TEXT("Array size is set to: %i, at time %f"), sizeof(_save_data), time_pass);
-		UE_LOG(LogTemp, Warning, TEXT("Array size is set to: %i"), sizeof(_save_data));
+		// UE_LOG(LogTemp, Warning, TEXT("Array size is set to: %i"), sizeof(_save_data));  // Debug UDP
 		memcpy(float_bytes, &_save_data, sizeof(_save_data));
 		// Writer << data;
 		// Writer.Empty();
@@ -104,7 +104,7 @@ void ACartPole::Tick(float DeltaTime)
 	}
 	int32 BytesSent = 0;
 	_send_socket->Send(Writer.GetData(), Writer.Num(), BytesSent);
-	UE_LOG(LogTemp, Warning, TEXT("Sent bytes: %i, Writer.Num(): %i"), BytesSent, Writer.Num());
+	// UE_LOG(LogTemp, Warning, TEXT("Sent bytes: %i, Writer.Num(): %i"), BytesSent, Writer.Num());  // Debug UDP
 	// Convert to send data function -- END
 
 }
