@@ -39,8 +39,7 @@ private:
 	ACartPole *CurrentThreadActor;
 
 	uint32 current_step;
-	uint32 calculations;
-	uint32 step_count;
+	// uint32 calculations;
 
 	float theta;
 	float theta_d;
