@@ -107,7 +107,8 @@
 			"*.tcc": "cpp",
 			"memory_resource": "cpp",
 			"cfenv": "cpp",
-			"filesystem": "cpp"
+			"filesystem": "cpp",
+			"*.inc": "cpp"
 		}
 	},
 	"extensions": {
